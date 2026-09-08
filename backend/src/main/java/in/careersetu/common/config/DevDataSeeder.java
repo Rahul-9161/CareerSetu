@@ -47,6 +47,8 @@ import in.careersetu.audit.entity.*;
 import in.careersetu.audit.repository.*;
 import in.careersetu.apprenticeships.entity.*;
 import in.careersetu.apprenticeships.repository.*;
+import in.careersetu.accreditation.entity.*;
+import in.careersetu.accreditation.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -98,6 +100,9 @@ public class DevDataSeeder implements CommandLineRunner {
     private final ApaarCreditRecordRepository apaarCreditRecordRepository;
     private final NatsApprenticeshipContractRepository natsApprenticeshipContractRepository;
     private final DbtStipendDisbursementRepository dbtStipendDisbursementRepository;
+    private final AccreditationReportRepository accreditationReportRepository;
+    private final StudentProgressionRecordRepository studentProgressionRecordRepository;
+    private final DepartmentAccreditationMetricRepository departmentAccreditationMetricRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DevDataSeeder(UserRepository userRepository,
@@ -130,6 +135,9 @@ public class DevDataSeeder implements CommandLineRunner {
                          ApaarCreditRecordRepository apaarCreditRecordRepository,
                          NatsApprenticeshipContractRepository natsApprenticeshipContractRepository,
                          DbtStipendDisbursementRepository dbtStipendDisbursementRepository,
+                         AccreditationReportRepository accreditationReportRepository,
+                         StudentProgressionRecordRepository studentProgressionRecordRepository,
+                         DepartmentAccreditationMetricRepository departmentAccreditationMetricRepository,
                          PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.studentProfileRepository = studentProfileRepository;
@@ -161,6 +169,9 @@ public class DevDataSeeder implements CommandLineRunner {
         this.apaarCreditRecordRepository = apaarCreditRecordRepository;
         this.natsApprenticeshipContractRepository = natsApprenticeshipContractRepository;
         this.dbtStipendDisbursementRepository = dbtStipendDisbursementRepository;
+        this.accreditationReportRepository = accreditationReportRepository;
+        this.studentProgressionRecordRepository = studentProgressionRecordRepository;
+        this.departmentAccreditationMetricRepository = departmentAccreditationMetricRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -172,7 +183,8 @@ public class DevDataSeeder implements CommandLineRunner {
             seedAlumniIfEmpty(defaultPasswordHash);
             seedComplianceIfEmpty(defaultPasswordHash);
             seedApprenticeshipsIfEmpty();
-            log.info("Database already seeded with {} users. Verified Alumni, Compliance & Apprenticeship networks.", userRepository.count());
+            seedAccreditationIfEmpty();
+            log.info("Database already seeded with {} users. Verified Alumni, Compliance, Apprenticeship & Accreditation networks.", userRepository.count());
             return;
         }
 
@@ -1512,5 +1524,56 @@ public class DevDataSeeder implements CommandLineRunner {
         dbtStipendDisbursementRepository.saveAll(List.of(dbt1, dbt2, dbt3));
 
         log.info("Phase 12 Apprenticeship data seeded: 1 APAAR Record, 1 NATS Contract, 3 Monthly DBT Vouchers.");
+    }
+
+    private void seedAccreditationIfEmpty() {
+        if (accreditationReportRepository.count() > 0) {
+            return;
+        }
+
+        log.info("Seeding Phase 13 Institutional Accreditation & NIRF / NAAC / NBA Audit data...");
+
+        AccreditationReport report = new AccreditationReport(
+                null,
+                "2025-26",
+                "National Institute of Technology Surathkal",
+                84.6,
+                "Rank 12 - 18 National",
+                850,
+                742,
+                68,
+                14.5,
+                16.8,
+                54.0,
+                87.29,
+                8.0,
+                0.95,
+                "IQAC_VERIFIED",
+                "Prof. K. R. Venkatraman, Dean (Academic Quality & Accreditations)"
+        );
+        report = accreditationReportRepository.save(report);
+
+        UUID repId = report.getId();
+
+        DepartmentAccreditationMetric cse = new DepartmentAccreditationMetric(null, repId, "Computer Science & Engineering", 180, 175, 168, 6, 18.5, 39.2, 85.0);
+        DepartmentAccreditationMetric ece = new DepartmentAccreditationMetric(null, repId, "Electronics & Communication", 160, 155, 142, 10, 15.2, 37.8, 76.5);
+        DepartmentAccreditationMetric me = new DepartmentAccreditationMetric(null, repId, "Mechanical Engineering", 140, 134, 118, 12, 11.4, 35.5, 72.0);
+        DepartmentAccreditationMetric ce = new DepartmentAccreditationMetric(null, repId, "Civil Engineering", 120, 115, 96, 15, 9.8, 34.0, 68.5);
+
+        departmentAccreditationMetricRepository.saveAll(List.of(cse, ece, me, ce));
+
+        List<StudentProgressionRecord> progressionRecords = List.of(
+                new StudentProgressionRecord(null, UUID.randomUUID(), "Aarav Sharma", "21CS104", "Computer Science & Engineering", "CAMPUS_PLACEMENT", "TechCorp India Technologies", "Senior Software Engineer", 24.5, "TC-OFFER-2026-9912", "/vault/proofs/21CS104_offer.pdf", "VERIFIED_BY_TPO"),
+                new StudentProgressionRecord(null, UUID.randomUUID(), "Rohan Kulkarni", "21CS112", "Computer Science & Engineering", "CAMPUS_PLACEMENT", "Google Cloud India", "Cloud Solutions Engineer", 32.0, "GOOG-IND-8812", "/vault/proofs/21CS112_offer.pdf", "VERIFIED_BY_TPO"),
+                new StudentProgressionRecord(null, UUID.randomUUID(), "Sneha Deshmukh", "21CS145", "Computer Science & Engineering", "HIGHER_STUDIES_ABROAD", "Stanford University", "M.S. in Computer Science (AI Track)", 0.0, "STAN-ADM-2026-041", "/vault/proofs/21CS145_stanford.pdf", "VERIFIED_BY_TPO"),
+                new StudentProgressionRecord(null, UUID.randomUUID(), "Ananya Verma", "21EC108", "Electronics & Communication", "CAMPUS_PLACEMENT", "Qualcomm Wireless", "Hardware Design Engineer", 22.0, "QCOM-HW-2026-19", "/vault/proofs/21EC108_offer.pdf", "VERIFIED_BY_TPO"),
+                new StudentProgressionRecord(null, UUID.randomUUID(), "Vikram Singhania", "21EC120", "Electronics & Communication", "COMPETITIVE_EXAM_QUALIFIED", "GATE 2026 Examination", "GATE All India Rank 18 (EC)", 0.0, "GATE-EC-2026-018", "/vault/proofs/21EC120_gate.pdf", "VERIFIED_BY_TPO"),
+                new StudentProgressionRecord(null, UUID.randomUUID(), "Tanvi Hegde", "21ME115", "Mechanical Engineering", "CAMPUS_PLACEMENT", "Tata Motors Mobility", "Powertrain Design Engineer", 12.5, "TATA-PT-2026-88", "/vault/proofs/21ME115_offer.pdf", "VERIFIED_BY_TPO"),
+                new StudentProgressionRecord(null, UUID.randomUUID(), "Nikhil Nair", "21CE103", "Civil Engineering", "HIGHER_STUDIES_INDIA", "IIT Bombay", "M.Tech in Structural Engineering", 0.0, "IITB-ADM-STR-99", "/vault/proofs/21CE103_iitb.pdf", "VERIFIED_BY_TPO"),
+                new StudentProgressionRecord(null, UUID.randomUUID(), "Aditya Joshi", "21CS177", "Computer Science & Engineering", "ENTREPRENEURSHIP", "Aether Robotics Labs", "Founder & CTO (DPIIT Seed Grant ₹20L)", 18.0, "DPIIT-STP-2026-44", "/vault/proofs/21CS177_dpiit.pdf", "VERIFIED_BY_TPO")
+        );
+        studentProgressionRecordRepository.saveAll(progressionRecords);
+
+        log.info("Phase 13 Accreditation data seeded: 1 NIRF/NAAC Report, 4 Department Metrics, 8 Verifiable Progression Records.");
     }
 }

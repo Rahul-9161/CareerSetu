@@ -94,6 +94,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1/grievances/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/compliance/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/apprenticeships/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/accreditation/**").permitAll()
                 .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 // All other endpoints require authentication
                 .anyRequest().authenticated()

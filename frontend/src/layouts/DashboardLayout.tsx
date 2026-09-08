@@ -50,6 +50,7 @@ const navConfig: Record<string, NavItem[]> = {
     { label: 'Overview', href: '/institution/overview', icon: LayoutDashboard },
     { label: 'Student Roster', href: '/institution/students', icon: GraduationCap },
     { label: 'Placement Drives', href: '/institution/drives', icon: TrendingUp },
+    { label: 'Accreditation & NIRF', href: '/institution/accreditation', icon: Award },
   ],
   faculty: [
     { label: 'Overview', href: '/faculty/overview', icon: LayoutDashboard },

@@ -43,7 +43,8 @@ $routes = @(
     "/student/apprenticeships",
     "/student/grievances",
     "/employer/apprenticeships",
-    "/compliance/overview"
+    "/compliance/overview",
+    "/institution/accreditation"
 )
 
 Add-Type -AssemblyName System.Net.Http

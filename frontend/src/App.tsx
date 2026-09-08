@@ -41,6 +41,7 @@ import MandatoryInternshipPage from '@/pages/student/MandatoryInternshipPage'
 import GrievanceRedressalPage from '@/pages/student/GrievanceRedressalPage'
 import StudentApprenticeshipsPage from '@/pages/student/StudentApprenticeshipsPage'
 import EmployerApprenticeshipsPage from '@/pages/employer/EmployerApprenticeshipsPage'
+import AccreditationDashboardPage from '@/pages/institution/AccreditationDashboardPage'
 import CompliancePortal from '@/pages/compliance/CompliancePortal'
 import NotFound from '@/pages/NotFound'
 
@@ -144,6 +145,7 @@ export default function App() {
         <Route path="/institution/overview" element={<InstitutionDashboard />} />
         <Route path="/institution/students" element={<StudentDirectory />} />
         <Route path="/institution/drives" element={<PlacementDrives />} />
+        <Route path="/institution/accreditation" element={<AccreditationDashboardPage />} />
       </Route>
 
       {/* Faculty & Academic Mentor routes */}
