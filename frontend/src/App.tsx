@@ -39,6 +39,8 @@ import AlumniCommunityPage from '@/pages/alumni/AlumniCommunityPage'
 import StudentAlumniConnect from '@/pages/student/StudentAlumniConnect'
 import MandatoryInternshipPage from '@/pages/student/MandatoryInternshipPage'
 import GrievanceRedressalPage from '@/pages/student/GrievanceRedressalPage'
+import StudentApprenticeshipsPage from '@/pages/student/StudentApprenticeshipsPage'
+import EmployerApprenticeshipsPage from '@/pages/employer/EmployerApprenticeshipsPage'
 import CompliancePortal from '@/pages/compliance/CompliancePortal'
 import NotFound from '@/pages/NotFound'
 
@@ -115,6 +117,7 @@ export default function App() {
         <Route path="/student/assessment" element={<AssessmentPage />} />
         <Route path="/student/copilot" element={<AICopilot />} />
         <Route path="/student/internships" element={<MandatoryInternshipPage />} />
+        <Route path="/student/apprenticeships" element={<StudentApprenticeshipsPage />} />
         <Route path="/student/grievances" element={<GrievanceRedressalPage />} />
         <Route path="/student/onboarding" element={<StudentOnboarding />} />
         <Route path="/student/learning" element={<StudentLearning />} />
@@ -129,6 +132,7 @@ export default function App() {
         <Route path="/employer/overview" element={<EmployerDashboard />} />
         <Route path="/employer/jobs" element={<EmployerJobs />} />
         <Route path="/employer/applicants" element={<ApplicantATS />} />
+        <Route path="/employer/apprenticeships" element={<EmployerApprenticeshipsPage />} />
         <Route path="/employer/interviews" element={<InterviewScheduler />} />
         <Route path="/employer/analytics" element={<EmployerAnalytics />} />
         <Route path="/employer/profile" element={<CompanyProfilePage />} />

@@ -40,7 +40,9 @@ $routes = @(
     "/alumni/directory",
     "/alumni/community",
     "/student/internships",
+    "/student/apprenticeships",
     "/student/grievances",
+    "/employer/apprenticeships",
     "/compliance/overview"
 )
 

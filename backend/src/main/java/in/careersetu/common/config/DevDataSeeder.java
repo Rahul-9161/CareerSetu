@@ -45,6 +45,8 @@ import in.careersetu.grievances.entity.*;
 import in.careersetu.grievances.repository.*;
 import in.careersetu.audit.entity.*;
 import in.careersetu.audit.repository.*;
+import in.careersetu.apprenticeships.entity.*;
+import in.careersetu.apprenticeships.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -93,6 +95,9 @@ public class DevDataSeeder implements CommandLineRunner {
     private final InternshipLogbookEntryRepository internshipLogbookEntryRepository;
     private final GrievanceTicketRepository grievanceTicketRepository;
     private final ComplianceAuditEventRepository complianceAuditEventRepository;
+    private final ApaarCreditRecordRepository apaarCreditRecordRepository;
+    private final NatsApprenticeshipContractRepository natsApprenticeshipContractRepository;
+    private final DbtStipendDisbursementRepository dbtStipendDisbursementRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DevDataSeeder(UserRepository userRepository,
@@ -122,6 +127,9 @@ public class DevDataSeeder implements CommandLineRunner {
                          InternshipLogbookEntryRepository internshipLogbookEntryRepository,
                          GrievanceTicketRepository grievanceTicketRepository,
                          ComplianceAuditEventRepository complianceAuditEventRepository,
+                         ApaarCreditRecordRepository apaarCreditRecordRepository,
+                         NatsApprenticeshipContractRepository natsApprenticeshipContractRepository,
+                         DbtStipendDisbursementRepository dbtStipendDisbursementRepository,
                          PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.studentProfileRepository = studentProfileRepository;
@@ -150,6 +158,9 @@ public class DevDataSeeder implements CommandLineRunner {
         this.internshipLogbookEntryRepository = internshipLogbookEntryRepository;
         this.grievanceTicketRepository = grievanceTicketRepository;
         this.complianceAuditEventRepository = complianceAuditEventRepository;
+        this.apaarCreditRecordRepository = apaarCreditRecordRepository;
+        this.natsApprenticeshipContractRepository = natsApprenticeshipContractRepository;
+        this.dbtStipendDisbursementRepository = dbtStipendDisbursementRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -160,7 +171,8 @@ public class DevDataSeeder implements CommandLineRunner {
         if (userRepository.count() > 0) {
             seedAlumniIfEmpty(defaultPasswordHash);
             seedComplianceIfEmpty(defaultPasswordHash);
-            log.info("Database already seeded with {} users. Verified Alumni & Compliance networks.", userRepository.count());
+            seedApprenticeshipsIfEmpty();
+            log.info("Database already seeded with {} users. Verified Alumni, Compliance & Apprenticeship networks.", userRepository.count());
             return;
         }
 
@@ -825,8 +837,9 @@ public class DevDataSeeder implements CommandLineRunner {
 
         seedAlumniIfEmpty(defaultPasswordHash);
         seedComplianceIfEmpty(defaultPasswordHash);
+        seedApprenticeshipsIfEmpty();
 
-        log.info("CareerSetu demo data seeding completed successfully! Mentors, Events, Interviews, TPO Cohort, Placement Drives, Notifications, Assessment Badges, Phase 9 Faculty Portal, Phase 10 Alumni Network, and Phase 11 Compliance initialized.");
+        log.info("CareerSetu demo data seeding completed successfully! Mentors, Events, Interviews, TPO Cohort, Placement Drives, Notifications, Assessment Badges, Phase 9 Faculty Portal, Phase 10 Alumni Network, Phase 11 Compliance, and Phase 12 Apprenticeships initialized.");
     }
 
     private void seedAlumniIfEmpty(String defaultPasswordHash) {
@@ -1405,5 +1418,99 @@ public class DevDataSeeder implements CommandLineRunner {
         complianceAuditEventRepository.saveAll(List.of(evt1, evt2, evt3, evt4));
 
         log.info("Phase 11 Compliance data seeded: 2 Mandatory Internships, 4 Logbook entries, 3 Grievance tickets, 4 Audit events, and Compliance Officer account initialized.");
+    }
+
+    private void seedApprenticeshipsIfEmpty() {
+        if (apaarCreditRecordRepository.count() > 0) {
+            return;
+        }
+
+        log.info("Seeding Phase 12 National Apprenticeships (NATS 2.0) & APAAR / ABC Sync data...");
+
+        User studentUser = userRepository.findByEmail("student@careersetu.in").orElse(null);
+        UUID studentId = studentUser != null ? studentUser.getId() : UUID.randomUUID();
+
+        Company techCorp = companyRepository.findAll().stream().findFirst().orElse(null);
+        UUID companyId = techCorp != null ? techCorp.getId() : UUID.randomUUID();
+
+        // 1. APAAR ID & Academic Bank of Credits (ABC) Record
+        ApaarCreditRecord apaar = new ApaarCreditRecord(
+                null,
+                studentId,
+                "APAAR-9182-4412-8809",
+                "DL-ARV-99210",
+                "Aarav Sharma",
+                "National Institute of Technology",
+                28,
+                "Computer Science & Engineering",
+                "VERIFIED",
+                "0x7b2a9d1f30e65c9284fa07b1d39e5684a2f1c8e79b03d528f149bca7e891"
+        );
+        apaarCreditRecordRepository.save(apaar);
+
+        // 2. NATS 2.0 Tripartite Apprenticeship Contract
+        NatsApprenticeshipContract contract = new NatsApprenticeshipContract(
+                null,
+                "NATS-APP-2026-0812",
+                studentId,
+                "Aarav Sharma",
+                "APAAR-9182-4412-8809",
+                companyId,
+                "TechCorp India",
+                "Computer Systems & Cloud Engineering",
+                12,
+                30000,
+                25500,
+                4500,
+                "BOAT Western Region (Mumbai/Pune)",
+                "ACTIVE",
+                LocalDate.now().minusMonths(3),
+                LocalDate.now().plusMonths(9)
+        );
+        contract = natsApprenticeshipContractRepository.save(contract);
+
+        // 3. Monthly Direct Benefit Transfer (DBT) Stipend Subsidy Disbursements
+        DbtStipendDisbursement dbt1 = new DbtStipendDisbursement(
+                null,
+                contract.getId(),
+                "November 2025",
+                25500,
+                4500,
+                "NEFT-TC-918201",
+                "APBS-PFMS-88192044",
+                "DBT_CREDITED",
+                "Corporate share NEFT cleared. Central Government 25% DBT subsidy successfully credited via Aadhaar Payment Bridge.",
+                Instant.now().minusSeconds(86400L * 60)
+        );
+
+        DbtStipendDisbursement dbt2 = new DbtStipendDisbursement(
+                null,
+                contract.getId(),
+                "December 2025",
+                25500,
+                4500,
+                "NEFT-TC-918202",
+                "APBS-PFMS-88192045",
+                "DBT_CREDITED",
+                "Corporate share NEFT cleared. Central Government 25% DBT subsidy successfully credited via Aadhaar Payment Bridge.",
+                Instant.now().minusSeconds(86400L * 30)
+        );
+
+        DbtStipendDisbursement dbt3 = new DbtStipendDisbursement(
+                null,
+                contract.getId(),
+                "January 2026",
+                25500,
+                4500,
+                "NEFT-TC-918203",
+                null,
+                "PFMS_VERIFIED",
+                "Corporate share cleared. Government DBT subsidy voucher verified by PFMS, queued for Aadhaar batch release.",
+                null
+        );
+
+        dbtStipendDisbursementRepository.saveAll(List.of(dbt1, dbt2, dbt3));
+
+        log.info("Phase 12 Apprenticeship data seeded: 1 APAAR Record, 1 NATS Contract, 3 Monthly DBT Vouchers.");
     }
 }

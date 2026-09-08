@@ -5,7 +5,7 @@ import {
   LayoutDashboard, FileText, Zap, Search, BarChart3, Brain, GraduationCap,
   Briefcase, Building2, Users, Bell, Settings, LogOut, Menu, X, ChevronRight,
   Target, Calendar, MessageSquare, Award, BookOpen, Layers, TrendingUp,
-  Shield, Star, ChevronDown, Sparkles, Info, CheckCheck, Scale
+  Shield, Star, ChevronDown, Sparkles, Info, CheckCheck, Scale, Landmark
 } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { useNotificationStore } from '@/store/notificationStore'
@@ -28,6 +28,7 @@ const navConfig: Record<string, NavItem[]> = {
     { label: 'Assessment', href: '/student/assessment', icon: Target },
     { label: 'AI Copilot', href: '/student/copilot', icon: Brain },
     { label: 'AICTE Internships', href: '/student/internships', icon: Shield },
+    { label: 'NATS & APAAR ID', href: '/student/apprenticeships', icon: Landmark },
     { label: 'Grievance Desk', href: '/student/grievances', icon: Scale },
     { label: 'Learning', href: '/student/learning', icon: BookOpen },
     { label: 'Mentors', href: '/student/mentors', icon: Users },
@@ -39,6 +40,7 @@ const navConfig: Record<string, NavItem[]> = {
     { label: 'Overview', href: '/employer/overview', icon: LayoutDashboard },
     { label: 'Jobs', href: '/employer/jobs', icon: Briefcase },
     { label: 'Applicants', href: '/employer/applicants', icon: Users, badge: 12 },
+    { label: 'NATS & DBT Ledger', href: '/employer/apprenticeships', icon: Landmark },
     { label: 'Interviews', href: '/employer/interviews', icon: Calendar },
     { label: 'Analytics', href: '/employer/analytics', icon: BarChart3 },
     { label: 'Company Profile', href: '/employer/profile', icon: Building2 },
