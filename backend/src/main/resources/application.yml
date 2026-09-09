@@ -48,13 +48,6 @@ spring:
         order_inserts: true
         order_updates: true
 
-  # ── Flyway Migrations ────────────────────────────────────
-  flyway:
-    enabled: ${FLYWAY_ENABLED:false}
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-    validate-on-migrate: false
-
   # ── Jackson ──────────────────────────────────────────────
   jackson:
     default-property-inclusion: non_null

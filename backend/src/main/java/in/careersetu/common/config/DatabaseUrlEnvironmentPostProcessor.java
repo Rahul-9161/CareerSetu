@@ -70,9 +70,6 @@ public class DatabaseUrlEnvironmentPostProcessor implements EnvironmentPostProce
                     if (password != null) {
                         props.put("spring.datasource.password", password);
                     }
-                    props.put("spring.flyway.enabled", "true");
-                    props.put("spring.flyway.baseline-on-migrate", "true");
-                    props.put("spring.flyway.validate-on-migrate", "false");
                     props.put("spring.jpa.hibernate.ddl-auto", "update");
                     props.put("spring.jpa.properties.hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 
@@ -80,12 +77,9 @@ public class DatabaseUrlEnvironmentPostProcessor implements EnvironmentPostProce
                 } else if (rawDatabaseUrl.startsWith("jdbc:postgresql://")) {
                     props.put("spring.datasource.url", rawDatabaseUrl);
                     props.put("spring.datasource.driver-class-name", "org.postgresql.Driver");
-                    props.put("spring.flyway.enabled", "true");
-                    props.put("spring.flyway.baseline-on-migrate", "true");
-                    props.put("spring.flyway.validate-on-migrate", "false");
                     props.put("spring.jpa.hibernate.ddl-auto", "update");
                     props.put("spring.jpa.properties.hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-                    log.info("Configured PostgreSQL datasource from JDBC URL");
+                    log.info("Configured PostgreSQL datasource from JDBC URL: {}", rawDatabaseUrl);
                 }
             } catch (Exception e) {
                 log.warn("Failed to parse DATABASE_URL ({}). Defaulting to standard properties.", e.getMessage());
@@ -97,7 +91,6 @@ public class DatabaseUrlEnvironmentPostProcessor implements EnvironmentPostProce
             props.put("spring.datasource.driver-class-name", "org.h2.Driver");
             props.put("spring.datasource.username", "sa");
             props.put("spring.datasource.password", "");
-            props.put("spring.flyway.enabled", "false");
             props.put("spring.jpa.hibernate.ddl-auto", "update");
             props.put("spring.jpa.properties.hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         }
