@@ -1,6 +1,9 @@
 # ============================================================
 # CareerSetu Backend Configuration
 # ============================================================
+server:
+  port: ${PORT:8080}
+
 spring:
   application:
     name: careersetu-backend
@@ -52,7 +55,7 @@ spring:
       timeout: 3000
 
   session:
-    store-type: redis
+    store-type: ${SPRING_SESSION_STORE_TYPE:none}
     timeout: 30m
 
   # ── Mail ──────────────────────────────────────────────────
@@ -89,7 +92,7 @@ spring:
 
 # ── Server ────────────────────────────────────────────────
 server:
-  port: ${SPRING_PORT:8080}
+  port: ${PORT:8080}
   servlet:
     context-path: /
   compression:
