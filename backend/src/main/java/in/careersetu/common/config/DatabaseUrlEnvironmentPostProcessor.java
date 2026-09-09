@@ -71,6 +71,8 @@ public class DatabaseUrlEnvironmentPostProcessor implements EnvironmentPostProce
                         props.put("spring.datasource.password", password);
                     }
                     props.put("spring.flyway.enabled", "true");
+                    props.put("spring.flyway.baseline-on-migrate", "true");
+                    props.put("spring.flyway.validate-on-migrate", "false");
                     props.put("spring.jpa.hibernate.ddl-auto", "update");
                     props.put("spring.jpa.properties.hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 
@@ -79,6 +81,8 @@ public class DatabaseUrlEnvironmentPostProcessor implements EnvironmentPostProce
                     props.put("spring.datasource.url", rawDatabaseUrl);
                     props.put("spring.datasource.driver-class-name", "org.postgresql.Driver");
                     props.put("spring.flyway.enabled", "true");
+                    props.put("spring.flyway.baseline-on-migrate", "true");
+                    props.put("spring.flyway.validate-on-migrate", "false");
                     props.put("spring.jpa.hibernate.ddl-auto", "update");
                     props.put("spring.jpa.properties.hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
                     log.info("Configured PostgreSQL datasource from JDBC URL");
